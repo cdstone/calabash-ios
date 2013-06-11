@@ -104,7 +104,6 @@ module Calabash
         end
       end
 
-
       def _do_keyplane(kbtree_proc, keyplane_proc)
         desc = query("view:'UIKBKeyplaneView'", "keyplane")
         fail("No keyplane (UIKBKeyplaneView keyplane)") if desc.empty?
