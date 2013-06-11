@@ -17,7 +17,7 @@ def count_photos(album)
         raise msg
         else
         msg = "#res['count']}\n"
-        raise msg
+        puts msg
     end
 end
 
