@@ -24,6 +24,13 @@ module Calabash
                 res['count']
             end
             
+            def album_exists(album)
+                res = http({:method => :post, :path => 'count'},
+                           {:album => album, :exists => "YES"})
+                res = JSON.parse(res)
+                res['results'] == "album exists"
+            end
+            
             def add_album(album)
                 res = http({:method => :post, :path => 'photo'},
                            {:album => album})
