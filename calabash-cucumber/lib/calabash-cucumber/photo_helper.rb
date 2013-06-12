@@ -11,9 +11,9 @@ module Calabash
                 @out = Base64.encode64(str.to_s).gsub(/\n/, '') # encodes then strips new line to match php style
             end
             
-            def count_photos(album)
+            def count_media(album, filter="default")
                 res = http({:method => :post, :path => 'count'},
-                           {:album => album})
+                           {:album => album, :filter => filter})
                 res = JSON.parse(res)
                 if res['outcome'] != 'SUCCESS'
                     msg = "Count failed because: #{res['reason']}\n#{res['details']}"
@@ -26,7 +26,7 @@ module Calabash
             
             def album_exists(album)
                 res = http({:method => :post, :path => 'count'},
-                           {:album => album, :exists => "YES"})
+                           {:album => album})
                 res = JSON.parse(res)
                 res['results'] == "album exists"
             end
@@ -42,13 +42,13 @@ module Calabash
                 res['results']
             end
             
-            def add_movie(dir)
-                movie = base64_encode(File.read(dir))
+            def add_video(dir)
+                video = base64_encode(File.read(dir))
                 res = http({:method => :post, :path => 'photo'},
-                           {:media => movie, :type => 'movie'})
+                           {:media => video, :type => 'video'})
                 res = JSON.parse(res)
                 if res['outcome'] != 'SUCCESS'
-                    msg = "Movie failed because: #{res['reason']}\n#{res['details']}"
+                    msg = "Video failed because: #{res['reason']}\n#{res['details']}"
                     raise msg
                 end
                 res['results']
