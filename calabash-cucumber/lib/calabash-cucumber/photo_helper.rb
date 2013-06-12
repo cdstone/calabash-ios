@@ -35,15 +35,27 @@ module Calabash
                 res['results']
             end
             
-            def add_photo(dir, album)
+            def add_movie(dir)
+                movie = base64_encode(File.read(dir))
+                res = http({:method => :post, :path => 'photo'},
+                           {:media => movie, :type => 'movie'})
+                res = JSON.parse(res)
+                if res['outcome'] != 'SUCCESS'
+                    msg = "Movie failed because: #{res['reason']}\n#{res['details']}"
+                    raise msg
+                end
+                res['results']
+            end
+            
+            def add_photo(dir, album=nil)
                 image = base64_encode(File.read(dir))
                 
                 if album != nil
                     res = http({:method => :post, :path => 'photo'},
-                               {:phto => image, :album => album})
+                               {:media => image, :album => album})
                     else
                     res = http({:method => :post, :path => 'photo'},
-                               {:phto => image})
+                               {:media => image})
                 end
                 
                 res = JSON.parse(res)
