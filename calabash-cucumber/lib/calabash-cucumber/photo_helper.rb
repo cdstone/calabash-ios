@@ -11,9 +11,9 @@ module Calabash
                 @out = Base64.encode64(str.to_s).gsub(/\n/, '') # encodes then strips new line to match php style
             end
             
-            def count_media(album, filter="default")
+            def count_media(album="Saved Photos", filter=:default)
                 res = http({:method => :post, :path => 'count'},
-                           {:album => album, :filter => filter})
+                           {:album => album, :filter => filter.to_s})
                 res = JSON.parse(res)
                 if res['outcome'] != 'SUCCESS'
                     msg = "Count failed because: #{res['reason']}\n#{res['details']}"
@@ -54,16 +54,11 @@ module Calabash
                 res['results']
             end
             
-            def add_photo(dir, album=nil)
+            def add_photo(dir, album="default")
                 image = base64_encode(File.read(dir))
                 
-                if album != nil
-                    res = http({:method => :post, :path => 'photo'},
-                               {:media => image, :album => album})
-                    else
-                    res = http({:method => :post, :path => 'photo'},
-                               {:media => image})
-                end
+                res = http({:method => :post, :path => 'photo'},
+                            {:media => image, :album => album})
                 
                 res = JSON.parse(res)
                 if res['outcome'] != 'SUCCESS'
