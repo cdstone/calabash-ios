@@ -1,7 +1,7 @@
 require 'calabash-cucumber/core'
 require 'calabash-cucumber/tests_helpers'
 require 'calabash-cucumber/keyboard_helpers'
-require 'calabash-cucumber/photo_helper'
+require 'calabash-cucumber/media_helpers'
 require 'calabash-cucumber/wait_helpers'
 require 'calabash-cucumber/location'
 require 'calabash-cucumber/launcher'
@@ -26,7 +26,7 @@ module Calabash
       include Calabash::Cucumber::TestsHelpers
       include Calabash::Cucumber::WaitHelpers
       include Calabash::Cucumber::KeyboardHelpers
-      include Calabash::Cucumber::PhotoHelpers
+      include Calabash::Cucumber::MediaHelpers
       include Calabash::Cucumber::Location
 
 

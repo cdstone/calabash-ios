@@ -49,10 +49,10 @@ module Calabash
             end
             
             # adds the video from the specified path to the device
-            def add_video(path)
-                video = base64_encode(File.read(dir))
+            def add_video(path, album="Saved Photos")
+                video = base64_encode(File.read(path))
                 res = http({:method => :post, :path => 'photo'},
-                           {:media => video, :type => 'video'})
+                           {:media => video, :type => 'video', :album => album})
                 res = JSON.parse(res)
                 if res['outcome'] != 'SUCCESS'
                     msg = "Video failed because: #{res['reason']}\n#{res['details']}"
@@ -64,7 +64,7 @@ module Calabash
             # adds the specified photo to the device under the specified album
             # "Saved Photos defaults to no album
             def add_photo(path, album="Saved Photos")
-                image = base64_encode(File.read(dir))
+                image = base64_encode(File.read(path))
                 
                 res = http({:method => :post, :path => 'photo'},
                             {:media => image, :album => album})
