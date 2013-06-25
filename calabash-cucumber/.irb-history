@@ -1,0 +1,2 @@
+send_uia_command({:command=>'go'})
+exit

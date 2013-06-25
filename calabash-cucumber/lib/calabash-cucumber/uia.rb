@@ -58,21 +58,21 @@ module Calabash
             def uia_enter()
                 uia_handle_command(:enter)
             end
-            
+                        
             # code for selecting photos from an album
             # @album = the album name
             # @index = the index of the photo in the album starting at 0
             def select_photo(album, index)
                 count = count_media(album)
                 # append to album name to match iOS name scheme
-                albumName = album + ",   (#{count})"
+                albumName = "\"" + album + ",   (#{count})\""
                 # select the correct album
-                send_uia_command({:command => 'UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{albumName}].tap()'})
+                send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{albumName}].tap()"})
                 # select the correct photograph using its index and the max number of images in each row
-                maxRow = send_uia_command({:command => 'UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells().length - 1'})['value']
+                maxRow = send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[0].images().length"})['value']
                 x = index % maxRow
                 y = (index/maxRow).floor
-                send_uia_command({:command => 'UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{y}].images()[#{x}].tap()'})
+                send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{y}].images()[#{x}].tap()"})
             end
 
             
