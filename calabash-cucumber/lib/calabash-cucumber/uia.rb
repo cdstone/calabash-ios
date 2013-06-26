@@ -60,19 +60,33 @@ module Calabash
             end
                         
             # code for selecting photos from an album
-            # @album = the album name
-            # @index = the index of the photo in the album starting at 0
-            def select_photo(album, index)
+            # @album (string) = the album name
+            # @index (int) = the index of the photo in the album starting at 0
+            def select_photo(album="Saved Photos", index=0)
                 count = count_media(album)
+                if count == 0
+                    raise "No images in album"
+                end
                 # append to album name to match iOS name scheme
                 albumName = "\"" + album + ",   (#{count})\""
                 # select the correct album
                 send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{albumName}].tap()"})
                 # select the correct photograph using its index and the max number of images in each row
-                maxRow = send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[0].images().length"})['value']
+                maxRow = send_uia_command({:command => "window = UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0];\nwindow.cells()[0].elements().length"})['value']
                 x = index % maxRow
                 y = (index/maxRow).floor
-                send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{y}].images()[#{x}].tap()"})
+                # make sure element is visible for selection
+                if count.to_i > maxRow
+                    send_uia_command({:command => "window.cells()[#{y}].scrollToVisible()"})
+                end
+                # select
+                res = send_uia_command({:command => "window.cells()[#{y}].images()[#{x}].tap()"})
+                # check for errors
+                if res['status'] != "success"
+                    raise "error: photo not selected - #{res['value']}"
+                else
+                    res['status']
+                end
             end
 
             
