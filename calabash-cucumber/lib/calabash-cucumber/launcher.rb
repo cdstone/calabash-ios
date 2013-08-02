@@ -31,11 +31,6 @@ class Calabash::Cucumber::Launcher
   def simulator_target?
     ENV['DEVICE_TARGET'] == 'simulator'
   end
-    
-  # Changes the language of ios simulator according to the LOCALE environment variable
-  def set_simulator_language(sdk)
-    system("#{File.dirname(__FILE__)}/ios-sim-locale -sdk #{sdk} -language #{ENV['LOCALE']}") unless ENV['LOCALE'].nil?
-  end
 
   def active?
     (simulator_target? || device_target?) && (not run_loop.nil?)
@@ -57,7 +52,6 @@ class Calabash::Cucumber::Launcher
 
     sdk = sdk || ENV['SDK_VERSION'] || SimLauncher::SdkDetector.new().latest_sdk_version
     path = path || Calabash::Cucumber::SimulatorHelper.app_bundle_or_raise(app_path)
-    set_simulator_language(sdk)
 
     app = File.basename(path)
     bundle = `find "#{ENV['HOME']}/Library/Application Support/iPhone Simulator/#{sdk}/Applications/" -type d -depth 2 -name "#{app}" | head -n 1`
@@ -84,7 +78,6 @@ class Calabash::Cucumber::Launcher
 
       sdk = ENV['SDK_VERSION'] || SimLauncher::SdkDetector.new().latest_sdk_version
       path = Calabash::Cucumber::SimulatorHelper.app_bundle_or_raise(app_path)
-      set_simulator_language(sdk)
       if ENV['RESET_BETWEEN_SCENARIOS']=="1"
         reset_app_jail(sdk, path)
       end
