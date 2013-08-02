@@ -60,19 +60,25 @@ module Calabash
             end
                         
             # code for selecting photos from an album
-            # @album (string) = the album name
+            # @album (string) = the album name (input "Saved Photos" for the default album)
             # @index (int) = the index of the photo in the album starting at 0
-            def select_photo(album="Saved Photos", index=0)
+            # @popover (boolean) = whether the album display will appear as a popover (only available on iPads)
+            def select_photo(album="Saved Photos", index=0, popover=false)
                 count = count_media(album)
                 if count == 0
                     raise "No images in album"
                 end
                 # append to album name to match iOS name scheme
                 albumName = "\"" + album + ",   (#{count})\""
+                # alter command if using an iPad popover
+                ipad_name = ""
+                ipad_name = "popover()." if ENV['DEVICE'] == "ipad" && popover
+                
                 # select the correct album
-                send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0].cells()[#{albumName}].tap()"})
+                albumName = 0 if album=="Saved Photos" # In case the device is in another language
+                send_uia_command({:command => "UIATarget.localTarget().frontMostApp().mainWindow().#{ipad_name}tableViews()[0].cells()[#{albumName}].tap()"})
                 # select the correct photograph using its index and the max number of images in each row
-                maxRow = send_uia_command({:command => "window = UIATarget.localTarget().frontMostApp().mainWindow().tableViews()[0];\nwindow.cells()[0].elements().length"})['value']
+                maxRow = send_uia_command({:command => "window = UIATarget.localTarget().frontMostApp().mainWindow().#{ipad_name}tableViews()[0];\nwindow.cells()[0].elements().length"})['value']
                 x = index % maxRow
                 y = (index/maxRow).floor
                 # make sure element is visible for selection
