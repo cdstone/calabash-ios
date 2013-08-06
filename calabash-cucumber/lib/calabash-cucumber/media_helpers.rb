@@ -12,8 +12,9 @@ module Calabash
             end
             
             # counts the media items in the specified album according to the filter
-            # "Saved Photos" defaults to all media items on the device
-            # filter type can be :video or :photo
+            # "Saved Photos" defaults to the all media items album
+            # @album (String) - the name of the album
+            # @filter (String, symbol) - specifies the filter type; can be :video or :photo
             # other filter types will return as if there were no filter
             def count_media(album="Saved Photos", filter=:default)
                 res = http({:method => :post, :path => 'count'},
@@ -29,6 +30,7 @@ module Calabash
             end
             
             # returns true/false if the specified album exists on the device
+            # @album (String) - name of the album
             def album_exists?(album)
                 res = http({:method => :post, :path => 'count'},
                            {:album => album})
@@ -37,6 +39,7 @@ module Calabash
             end
             
             # adds the album to the device
+            # @album (String) - name of the album
             def add_album(album)
                 res = http({:method => :post, :path => 'photo'},
                            {:album => album})
@@ -48,7 +51,10 @@ module Calabash
                 res['results']
             end
             
-            # adds the video from the specified path to the device
+            # adds the video from the specified path to the device to the specified album
+            # Saved Photos defaults to no album
+            # @path (String) - the directory path of the video
+            # @album (String) - the album name
             def add_video(path, album="Saved Photos")
                 video = base64_encode(File.read(path))
                 res = http({:method => :post, :path => 'photo'},
@@ -63,6 +69,8 @@ module Calabash
             
             # adds the specified photo to the device under the specified album
             # "Saved Photos defaults to no album
+            # @path (String) - the directory path of the photo
+            # @album (String) - the album name
             def add_photo(path, album="Saved Photos")
                 image = base64_encode(File.read(path))
                 
